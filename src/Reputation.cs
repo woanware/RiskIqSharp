@@ -3,10 +3,11 @@ using System.Text.Json.Serialization;
 
 namespace RiskIqSharp
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class Reputation
     {
-        public Reputation() { }
-
         [JsonPropertyName("score")]
         public int Score { get; set; }
 
@@ -24,6 +25,10 @@ namespace RiskIqSharp
         public bool Parse(string json)
         {
             var data = JsonSerializer.Deserialize<Reputation>(json);
+
+            this.Score = data.Score;
+            this.Classification = data.Classification;
+            this.Rules = data.Rules;
 
             return true;
         }
