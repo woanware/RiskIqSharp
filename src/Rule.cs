@@ -2,6 +2,9 @@
 
 namespace RiskIqSharp
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class Rule
     {
         [JsonPropertyName("name")]
