@@ -14,6 +14,8 @@ namespace RiskIqSharp
         private string _apiKey;
         private HttpClient _httpClient;
 
+        private const string BASE_URL = "https://api.riskiq.net/pt/v2/";
+
         /// <summary>
         /// 
         /// </summary>
@@ -41,15 +43,26 @@ namespace RiskIqSharp
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="api"></param>
+        /// <param name="lookup"></param>
         /// <returns></returns>
-        private AsyncRetryPolicy GetRetryPolicy()
+        private Uri GetApiUri(string api, string lookup)
+        {
+            return new Uri(BASE_URL + $"{api}?query={lookup}");
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        private static AsyncRetryPolicy GetRetryPolicy()
         {
             return Policy.Handle<Exception>()
                 .WaitAndRetryAsync(3, retryCount => TimeSpan.FromSeconds(1),
-                onRetry: (response, exception, retryCount, context) =>
-                {
-                    Console.WriteLine($"{response.GetType()} thrown, retrying {retryCount}.");
-                });
+                    onRetry: (response, exception, retryCount, context) =>
+                    {
+                        Console.WriteLine($"{response.GetType()} thrown, retrying {retryCount}.");
+                    });
         }
 
         /// <summary>
@@ -59,18 +72,17 @@ namespace RiskIqSharp
         /// <returns></returns>
         public async Task<string> ReputationAsString(string lookup)
         {
-            var uri = new Uri($"https://api.riskiq.net/pt/v2/reputation?query={lookup}");
-
             var retryPolicy = GetRetryPolicy();
             string ret = await retryPolicy.ExecuteAsync(() =>
             {
-                HttpResponseMessage response = _httpClient.GetAsync(uri).Result;
+                HttpResponseMessage response = _httpClient.GetAsync(GetApiUri("reputation", lookup)).Result;
                 if (response.IsSuccessStatusCode == true)
                 {
                     return response.Content.ReadAsStringAsync();
                 }
 
                 return null;
+
             }).ConfigureAwait(false);
 
             return ret;
@@ -83,12 +95,10 @@ namespace RiskIqSharp
         /// <returns></returns>
         public async Task<Reputation> Reputation(string lookup)
         {
-            var uri = new Uri($"https://api.riskiq.net/pt/v2/reputation?query={lookup}");
-
             var retryPolicy = GetRetryPolicy();
             Reputation ret = await retryPolicy.ExecuteAsync(() =>
             {
-                HttpResponseMessage response = _httpClient.GetAsync(uri).Result;
+                HttpResponseMessage response = _httpClient.GetAsync(GetApiUri("reputation", lookup)).Result;
                 if (response.IsSuccessStatusCode == true)
                 {
                     var content = response.Content.ReadAsStringAsync().Result;
@@ -103,6 +113,61 @@ namespace RiskIqSharp
                 }
 
                 return null;
+
+            }).ConfigureAwait(false);
+
+            return ret;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lookup"></param>
+        /// <returns></returns>
+        public async Task<string> WhoisAsString(string lookup)
+        {
+            var retryPolicy = GetRetryPolicy();
+            string ret = await retryPolicy.ExecuteAsync(() =>
+            {
+                HttpResponseMessage response = _httpClient.GetAsync(GetApiUri("whois", lookup)).Result;
+                if (response.IsSuccessStatusCode == true)
+                {
+                    return response.Content.ReadAsStringAsync();
+                }
+
+                return null;
+
+            }).ConfigureAwait(false);
+
+            return ret;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lookup"></param>
+        /// <returns></returns>
+        public async Task<WhoIs> Whois(string lookup)
+        {
+            var retryPolicy = GetRetryPolicy();
+            WhoIs ret = await retryPolicy.ExecuteAsync(() =>
+            {
+                HttpResponseMessage response = _httpClient.GetAsync(GetApiUri("whois", lookup)).Result;
+                if (response.IsSuccessStatusCode == true)
+                {
+                    var content = response.Content.ReadAsStringAsync().Result;
+
+                    WhoIs w = new WhoIs();
+                    if (w.Parse(content) == true)
+                    {
+                        return Task.FromResult(w);
+                    }
+
+                    return null;
+                }
+
+                return null;
+
             }).ConfigureAwait(false);
 
             return ret;
