@@ -98,8 +98,6 @@ namespace RiskIqSharp
     /// </summary>
     public class WhoIsMeta
     {
-        public WhoIsMeta() { }
-
         [JsonPropertyName("city")]
         public string City { get; set; }
 

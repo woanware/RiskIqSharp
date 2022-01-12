@@ -172,5 +172,59 @@ namespace RiskIqSharp
 
             return ret;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lookup"></param>
+        /// <returns></returns>
+        public async Task<string> PassiveDnsAsString(string lookup)
+        {
+            var retryPolicy = GetRetryPolicy();
+            string ret = await retryPolicy.ExecuteAsync(() =>
+            {
+                HttpResponseMessage response = _httpClient.GetAsync(GetApiUri("dns/passive", lookup)).Result;
+                if (response.IsSuccessStatusCode == true)
+                {
+                    return response.Content.ReadAsStringAsync();
+                }
+
+                return null;
+
+            }).ConfigureAwait(false);
+
+            return ret;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lookup"></param>
+        /// <returns></returns>
+        public async Task<PassiveDns> PassiveDns(string lookup)
+        {
+            var retryPolicy = GetRetryPolicy();
+            PassiveDns ret = await retryPolicy.ExecuteAsync(() =>
+            {
+                HttpResponseMessage response = _httpClient.GetAsync(GetApiUri("dns/passive", lookup)).Result;
+                if (response.IsSuccessStatusCode == true)
+                {
+                    var content = response.Content.ReadAsStringAsync().Result;
+
+                    PassiveDns p = new PassiveDns();
+                    if (p.Parse(content) == true)
+                    {
+                        return Task.FromResult(p);
+                    }
+
+                    return null;
+                }
+
+                return null;
+
+            }).ConfigureAwait(false);
+
+            return ret;
+        }
     }
 }
