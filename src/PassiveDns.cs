@@ -32,7 +32,7 @@ namespace RiskIqSharp
         /// 
         /// <param name="json"></param>
         /// <returns></returns>
-        public bool Parse(string json)
+        internal bool Parse(string json)
         {
             var data = JsonSerializer.Deserialize<PassiveDns>(json);
 

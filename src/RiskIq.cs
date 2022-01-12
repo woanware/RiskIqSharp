@@ -36,8 +36,9 @@ namespace RiskIqSharp
         {
             _httpClient = new HttpClient();
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            var authToken = Encoding.ASCII.GetBytes($"{_userName}:{_apiKey}");
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(authToken));
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
+                "Basic", 
+                Convert.ToBase64String(Encoding.ASCII.GetBytes($"{_userName}:{_apiKey}")));
         }
 
         /// <summary>
@@ -215,6 +216,60 @@ namespace RiskIqSharp
                     if (p.Parse(content) == true)
                     {
                         return Task.FromResult(p);
+                    }
+
+                    return null;
+                }
+
+                return null;
+
+            }).ConfigureAwait(false);
+
+            return ret;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lookup"></param>
+        /// <returns></returns>
+        public async Task<string> ServicesAsString(string lookup)
+        {
+            var retryPolicy = GetRetryPolicy();
+            string ret = await retryPolicy.ExecuteAsync(() =>
+            {
+                HttpResponseMessage response = _httpClient.GetAsync(GetApiUri("services", lookup)).Result;
+                if (response.IsSuccessStatusCode == true)
+                {
+                    return response.Content.ReadAsStringAsync();
+                }
+
+                return null;
+
+            }).ConfigureAwait(false);
+
+            return ret;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lookup"></param>
+        /// <returns></returns>
+        public async Task<Services> Services(string lookup)
+        {
+            var retryPolicy = GetRetryPolicy();
+            Services ret = await retryPolicy.ExecuteAsync(() =>
+            {
+                HttpResponseMessage response = _httpClient.GetAsync(GetApiUri("services", lookup)).Result;
+                if (response.IsSuccessStatusCode == true)
+                {
+                    var content = response.Content.ReadAsStringAsync().Result;
+
+                    Services s = new Services();
+                    if (s.Parse(content) == true)
+                    {
+                        return Task.FromResult(s);
                     }
 
                     return null;

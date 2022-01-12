@@ -22,7 +22,7 @@ namespace RiskIqSharp
         /// 
         /// <param name="json"></param>
         /// <returns></returns>
-        public bool Parse(string json)
+        internal bool Parse(string json)
         {
             var data = JsonSerializer.Deserialize<Reputation>(json);
 
@@ -32,5 +32,23 @@ namespace RiskIqSharp
 
             return true;
         }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class Rule
+    {
+        [JsonPropertyName("name")]
+        public string Name { get; set; }
+
+        [JsonPropertyName("description")]
+        public string Description { get; set; }
+
+        [JsonPropertyName("severity")]
+        public int Severity { get; set; }
+
+        [JsonPropertyName("link")]
+        public string Link { get; set; }
     }
 }
