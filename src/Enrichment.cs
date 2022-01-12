@@ -62,4 +62,125 @@ namespace RiskIqSharp
             return true;
         }
     }
+
+    public class EnrichmentMalware
+    {
+        [JsonPropertyName("success")]
+        public bool Success { get; set; }
+
+        [JsonPropertyName("results")]
+        public MalwareMeta[] Results { get; set; }
+
+        /// <summary>
+        /// </summary>
+        /// 
+        /// <param name="json"></param>
+        /// <returns></returns>
+        internal bool Parse(string json)
+        {
+            var data = JsonSerializer.Deserialize<EnrichmentMalware>(json);
+
+            this.Success = data.Success;
+            this.Results = data.Results;
+
+            return true;
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class MalwareMeta
+    {
+        [JsonPropertyName("collectionDate")]
+        public string CollectionDate { get; set; }
+
+        [JsonPropertyName("sample")]
+        public string Sample { get; set; }
+
+        [JsonPropertyName("source")]
+        public string Source { get; set; }
+
+        [JsonPropertyName("sourceUrl")]
+        public string SourceUrl { get; set; }
+    }
+
+    public class EnrichmentOsint
+    {
+        [JsonPropertyName("success")]
+        public bool Success { get; set; }
+
+        [JsonPropertyName("results")]
+        public OsintMeta[] Results { get; set; }
+
+        /// <summary>
+        /// </summary>
+        /// 
+        /// <param name="json"></param>
+        /// <returns></returns>
+        internal bool Parse(string json)
+        {
+            var data = JsonSerializer.Deserialize<EnrichmentOsint>(json);
+
+            this.Success = data.Success;
+            this.Results = data.Results;
+
+            return true;
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class OsintMeta
+    {
+        [JsonPropertyName("source")]
+        public string Source { get; set; }
+
+        [JsonPropertyName("sourceUrl")]
+        public string SourceUrl { get; set; }
+
+        [JsonPropertyName("indicators")]
+        public string[] Indicators { get; set; }
+
+        [JsonPropertyName("compromised")]
+        public string[] Compromised { get; set; }
+
+        [JsonPropertyName("tags")]
+        public string[] Tags { get; set; }
+
+        [JsonPropertyName("derived")]
+        public string[] Derived { get; set; }
+
+        [JsonPropertyName("inReport")]
+        public string[] InReport { get; set; }
+    }
+
+    public class EnrichmentSubDomains
+    {
+        [JsonPropertyName("success")]
+        public bool Success { get; set; }
+
+        [JsonPropertyName("primaryDomain")]
+        public string PrimaryDomain { get; set; }
+
+        [JsonPropertyName("subdomains")]
+        public string[] SubDomains { get; set; }
+
+        /// <summary>
+        /// </summary>
+        /// 
+        /// <param name="json"></param>
+        /// <returns></returns>
+        internal bool Parse(string json)
+        {
+            var data = JsonSerializer.Deserialize<EnrichmentSubDomains>(json);
+
+            this.Success = data.Success;
+            this.PrimaryDomain = data.PrimaryDomain;
+            this.SubDomains = data.SubDomains;
+
+            return true;
+        }
+    }
 }

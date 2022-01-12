@@ -335,5 +335,167 @@ namespace RiskIqSharp
 
             return ret;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lookup"></param>
+        /// <returns></returns>
+        public async Task<string> EnrichmentMalwareAsString(string lookup)
+        {
+            var retryPolicy = GetRetryPolicy();
+            string ret = await retryPolicy.ExecuteAsync(() =>
+            {
+                HttpResponseMessage response = _httpClient.GetAsync(GetApiUri("enrichment/malware", lookup)).Result;
+                if (response.IsSuccessStatusCode == true)
+                {
+                    return response.Content.ReadAsStringAsync();
+                }
+
+                return null;
+
+            }).ConfigureAwait(false);
+
+            return ret;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lookup"></param>
+        /// <returns></returns>
+        public async Task<EnrichmentMalware> EnrichmentMalware(string lookup)
+        {
+            var retryPolicy = GetRetryPolicy();
+            EnrichmentMalware ret = await retryPolicy.ExecuteAsync(() =>
+            {
+                HttpResponseMessage response = _httpClient.GetAsync(GetApiUri("enrichment/malware", lookup)).Result;
+                if (response.IsSuccessStatusCode == true)
+                {
+                    var content = response.Content.ReadAsStringAsync().Result;
+
+                    EnrichmentMalware e = new EnrichmentMalware();
+                    if (e.Parse(content) == true)
+                    {
+                        return Task.FromResult(e);
+                    }
+
+                    return null;
+                }
+
+                return null;
+
+            }).ConfigureAwait(false);
+
+            return ret;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lookup"></param>
+        /// <returns></returns>
+        public async Task<string> EnrichmentOsintAsString(string lookup)
+        {
+            var retryPolicy = GetRetryPolicy();
+            string ret = await retryPolicy.ExecuteAsync(() =>
+            {
+                HttpResponseMessage response = _httpClient.GetAsync(GetApiUri("enrichment/osint", lookup)).Result;
+                if (response.IsSuccessStatusCode == true)
+                {
+                    return response.Content.ReadAsStringAsync();
+                }
+
+                return null;
+
+            }).ConfigureAwait(false);
+
+            return ret;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lookup"></param>
+        /// <returns></returns>
+        public async Task<EnrichmentOsint> EnrichmentOsint(string lookup)
+        {
+            var retryPolicy = GetRetryPolicy();
+            EnrichmentOsint ret = await retryPolicy.ExecuteAsync(() =>
+            {
+                HttpResponseMessage response = _httpClient.GetAsync(GetApiUri("enrichment/osint", lookup)).Result;
+                if (response.IsSuccessStatusCode == true)
+                {
+                    var content = response.Content.ReadAsStringAsync().Result;
+
+                    EnrichmentOsint e = new EnrichmentOsint();
+                    if (e.Parse(content) == true)
+                    {
+                        return Task.FromResult(e);
+                    }
+
+                    return null;
+                }
+
+                return null;
+
+            }).ConfigureAwait(false);
+
+            return ret;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lookup"></param>
+        /// <returns></returns>
+        public async Task<string> EnrichmentSubDomainsAsString(string lookup)
+        {
+            var retryPolicy = GetRetryPolicy();
+            string ret = await retryPolicy.ExecuteAsync(() =>
+            {
+                HttpResponseMessage response = _httpClient.GetAsync(GetApiUri("enrichment/subdomains", lookup)).Result;
+                if (response.IsSuccessStatusCode == true)
+                {
+                    return response.Content.ReadAsStringAsync();
+                }
+
+                return null;
+
+            }).ConfigureAwait(false);
+
+            return ret;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lookup"></param>
+        /// <returns></returns>
+        public async Task<EnrichmentSubDomains> EnrichmentSubDomains(string lookup)
+        {
+            var retryPolicy = GetRetryPolicy();
+            EnrichmentSubDomains ret = await retryPolicy.ExecuteAsync(() =>
+            {
+                HttpResponseMessage response = _httpClient.GetAsync(GetApiUri("enrichment/subdomains", lookup)).Result;
+                if (response.IsSuccessStatusCode == true)
+                {
+                    var content = response.Content.ReadAsStringAsync().Result;
+
+                    EnrichmentSubDomains e = new EnrichmentSubDomains();
+                    if (e.Parse(content) == true)
+                    {
+                        return Task.FromResult(e);
+                    }
+
+                    return null;
+                }
+
+                return null;
+
+            }).ConfigureAwait(false);
+
+            return ret;
+        }
     }
 }
