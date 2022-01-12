@@ -281,5 +281,59 @@ namespace RiskIqSharp
 
             return ret;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lookup"></param>
+        /// <returns></returns>
+        public async Task<string> EnrichmentAsString(string lookup)
+        {
+            var retryPolicy = GetRetryPolicy();
+            string ret = await retryPolicy.ExecuteAsync(() =>
+            {
+                HttpResponseMessage response = _httpClient.GetAsync(GetApiUri("enrichment", lookup)).Result;
+                if (response.IsSuccessStatusCode == true)
+                {
+                    return response.Content.ReadAsStringAsync();
+                }
+
+                return null;
+
+            }).ConfigureAwait(false);
+
+            return ret;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lookup"></param>
+        /// <returns></returns>
+        public async Task<Enrichment> Enrichment(string lookup)
+        {
+            var retryPolicy = GetRetryPolicy();
+            Enrichment ret = await retryPolicy.ExecuteAsync(() =>
+            {
+                HttpResponseMessage response = _httpClient.GetAsync(GetApiUri("enrichment", lookup)).Result;
+                if (response.IsSuccessStatusCode == true)
+                {
+                    var content = response.Content.ReadAsStringAsync().Result;
+
+                    Enrichment e = new Enrichment();
+                    if (e.Parse(content) == true)
+                    {
+                        return Task.FromResult(e);
+                    }
+
+                    return null;
+                }
+
+                return null;
+
+            }).ConfigureAwait(false);
+
+            return ret;
+        }
     }
 }
