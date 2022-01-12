@@ -7,3 +7,4 @@ The following API's are implemented:
 - Reputation (PassiveTotal)
 - WhoIs (PassiveTotal)
 - PassiveDns (PassiveTotal)
+- Services (PassiveTotal)
